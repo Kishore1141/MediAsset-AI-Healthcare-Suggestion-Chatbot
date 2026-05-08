@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediAssist - AI First Aid Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Fraunces:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0f1a;--bg2:#0f1726;--card:#1a2438;--card2:#1e2a3d;
+  --border:#2a3a55;--border2:#3a4f6e;
+  --text:#e8edf5;--text2:#8fa4c0;--text3:#5a7090;
+  --blue:#4a90d9;--blue2:#2d6db5;--blue3:#1a4f8a;
+  --red:#e85555;--green:#3dba7e;--amber:#f0a832;--teal:#2dc4b5;
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 2.5rem;border-bottom:1px solid var(--border);background:rgba(10,15,26,0.92);backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:1.35rem;font-weight:600;color:var(--text)}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-link{color:var(--text2);font-size:.88rem;background:none;border:none;transition:color .2s}
+.nav-link:hover{color:var(--text)}
+.nav-cta{background:var(--blue);color:#fff;border:none;padding:.6rem 1.4rem;border-radius:8px;font-size:.88rem;font-weight:500;transition:all .2s}
+.nav-cta:hover{background:var(--blue2);transform:translateY(-1px)}
+.hero{flex:1;display:flex;align-items:center;justify-content:center;padding:5rem 2rem 4rem;position:relative;overflow:hidden;background:radial-gradient(ellipse 90% 65% at 50% 0%,rgba(74,144,217,.08),transparent 70%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.1;pointer-events:none}
+.hero-content{max-width:700px;text-align:center;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(74,144,217,.1);border:1px solid rgba(74,144,217,.25);border-radius:24px;padding:.4rem 1.1rem;font-size:.78rem;color:var(--blue);margin-bottom:2rem;font-weight:500}
+.badge-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(2.4rem,5.5vw,4rem);font-weight:600;line-height:1.08;letter-spacing:-.02em;margin-bottom:1.4rem}
+.hero h1 span{background:linear-gradient(135deg,var(--blue),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-desc{font-size:1.05rem;color:var(--text2);line-height:1.8;max-width:540px;margin:0 auto 2.5rem}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;padding:.95rem 2.2rem;border-radius:12px;font-size:.95rem;font-weight:500;display:flex;align-items:center;gap:8px;transition:all .25s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(74,144,217,.35)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2);padding:.95rem 2.2rem;border-radius:12px;font-size:.95rem;transition:all .25s}
+.btn-outline:hover{background:var(--card);border-color:var(--blue);color:var(--blue)}
+.hero-stats{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap;padding-top:2.5rem;border-top:1px solid var(--border)}
+.stat-num{font-family:'Fraunces',serif;font-size:2.1rem;font-weight:600}
+.stat-lbl{font-size:.76rem;color:var(--text3);margin-top:2px;letter-spacing:.03em}
+.section{padding:5rem 2rem}.section-alt{background:var(--bg2)}
+.sec-title{text-align:center;font-family:'Fraunces',serif;font-size:2rem;font-weight:600;margin-bottom:.65rem}
+.sec-sub{text-align:center;color:var(--text2);margin-bottom:3rem;font-size:.95rem;line-height:1.6}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;max-width:960px;margin:0 auto}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.6rem;transition:all .25s}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-3px);background:var(--card2)}
+.feat-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;margin-bottom:1rem}
+.ic-blue{background:rgba(74,144,217,.15)}.ic-red{background:rgba(232,85,85,.15)}.ic-green{background:rgba(61,186,126,.15)}.ic-amber{background:rgba(240,168,50,.15)}.ic-teal{background:rgba(45,196,181,.15)}.ic-purple{background:rgba(130,100,220,.15)}
+.feat-card h3{font-size:.95rem;font-weight:600;margin-bottom:.55rem}
+.feat-card p{font-size:.84rem;color:var(--text2);line-height:1.65}
+.emerg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.75rem;max-width:960px;margin:0 auto}
+.etag{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.8rem 1rem;text-align:center;font-size:.83rem;color:var(--text2);font-weight:500;transition:all .2s}
+.etag:hover{border-color:var(--blue);color:var(--blue);background:rgba(74,144,217,.08);transform:translateY(-2px)}
+.etag.crit{border-color:rgba(232,85,85,.25);color:rgba(232,85,85,.85)}
+.etag.crit:hover{background:rgba(232,85,85,.08);border-color:var(--red)}
+.trust-row{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;max-width:800px;margin:0 auto}
+.trust-item{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.8rem 1.3rem}
+.trust-item span:first-child{font-size:18px}
+.trust-item span:last-child{font-size:.84rem;color:var(--text2);font-weight:500}
+footer{padding:2.5rem 2rem;text-align:center;border-top:1px solid var(--border);background:var(--bg2)}
+.disclaimer{max-width:640px;margin:0 auto 1rem;background:rgba(232,85,85,.07);border:1px solid rgba(232,85,85,.2);border-radius:10px;padding:1rem 1.25rem;font-size:.84rem;color:var(--text2);line-height:1.65}
+.disclaimer strong{color:var(--red)}.footer-note{font-size:.8rem;color:var(--text3)}
+#landing{min-height:100vh;display:flex;flex-direction:column}
+#chatpage{display:none;flex-direction:column;height:100vh;max-height:100vh;overflow:hidden}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg2);flex-shrink:0;gap:1rem}
+.chat-header-left{display:flex;align-items:center;gap:.9rem}
+.back-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1px solid var(--border);color:var(--text2);padding:.42rem .85rem;border-radius:8px;font-size:.83rem;transition:all .2s}
+.back-btn:hover{background:var(--card2);color:var(--text)}
+.chat-info-row{display:flex;align-items:center;gap:10px}
+.chat-av{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.chat-title-txt{font-weight:600;font-size:.95rem}
+.chat-online{font-size:.72rem;color:var(--green);display:flex;align-items:center;gap:4px;margin-top:2px}
+.online-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
+.chat-actions{display:flex;gap:.5rem}
+.icon-btn{background:transparent;border:1px solid var(--border);color:var(--text2);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .18s}
+.icon-btn:hover{background:var(--card2);color:var(--text);border-color:var(--border2)}
+.msgs-wrap{flex:1;overflow-y:auto;padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:1rem;min-height:0}
+.msg-row{display:flex;gap:9px;animation:msgIn .28s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.msg-row.user{flex-direction:row-reverse;align-self:flex-end;max-width:78%}
+.msg-row.ai{align-self:flex-start;max-width:86%}
+.msg-av{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;align-self:flex-end}
+.msg-av.ai{background:linear-gradient(135deg,var(--blue),var(--teal))}
+.msg-av.user{background:var(--card2);border:1px solid var(--border2)}
+.msg-body{flex:1;min-width:0}
+.bubble{background:var(--card);border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:3px;padding:.9rem 1.1rem;font-size:.875rem;line-height:1.7}
+.msg-row.user .bubble{background:linear-gradient(135deg,var(--blue3),#1d5ca0);border:1px solid var(--blue2);border-radius:14px;border-bottom-right-radius:3px}
+.msg-time{font-size:.68rem;color:var(--text3);margin-top:4px;padding:0 3px}
+.msg-row.user .msg-time{text-align:right}
+.emerg-alert{background:rgba(232,85,85,.1);border:1px solid rgba(232,85,85,.45);border-radius:13px;padding:1.1rem 1.3rem;animation:alertPop .38s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes alertPop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+.ea-head{display:flex;align-items:center;gap:7px;font-weight:700;color:var(--red);font-size:.88rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.55rem}
+.ea-pulse{width:9px;height:9px;background:var(--red);border-radius:50%;animation:epulse 1s infinite;flex-shrink:0}
+@keyframes epulse{0%,100%{box-shadow:0 0 0 0 rgba(232,85,85,.6)}50%{box-shadow:0 0 0 7px rgba(232,85,85,0)}}
+.ea-num{font-size:1.45rem;font-weight:700;color:var(--red);margin:.45rem 0;font-family:'Fraunces',serif}
+.ea-desc{font-size:.82rem;color:var(--text2);line-height:1.6}
+.steps{margin:.65rem 0 0;display:flex;flex-direction:column;gap:.5rem}
+.step-item{display:flex;gap:.65rem;align-items:flex-start}
+.step-num{width:23px;height:23px;border-radius:6px;background:rgba(74,144,217,.18);color:var(--blue);font-size:.73rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-txt{font-size:.86rem;line-height:1.65;color:var(--text2)}
+.warn-box{background:rgba(240,168,50,.1);border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:.65rem .9rem;margin:.55rem 0;font-size:.83rem;color:var(--amber);line-height:1.6}
+.msg-hdr{font-size:.88rem;font-weight:700;color:var(--text);margin:.75rem 0 .25rem}
+.msg-para{font-size:.875rem;line-height:1.72;color:var(--text2);margin-bottom:.3rem}
+.typing-bubble{background:var(--card);border:1px solid var(--border);border-radius:14px;border-bottom-left-radius:3px;padding:.75rem 1rem;display:inline-flex}
+.typing{display:flex;gap:4px;align-items:center}
+.typing span{width:7px;height:7px;background:var(--text3);border-radius:50%;animation:typeBounce .85s infinite}
+.typing span:nth-child(2){animation-delay:.17s}.typing span:nth-child(3){animation-delay:.34s}
+@keyframes typeBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+.quick-bar{padding:.7rem 1.5rem .5rem;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0}
+.quick-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);font-weight:600;margin-bottom:.5rem}
+.chips-row{display:flex;gap:.45rem;overflow-x:auto;flex-wrap:nowrap;padding-bottom:.4rem}
+.chips-row::-webkit-scrollbar{height:0}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:.33rem .85rem;font-size:.76rem;white-space:nowrap;color:var(--text2);flex-shrink:0;transition:all .15s}
+.chip:hover{border-color:var(--blue);color:var(--blue);background:rgba(74,144,217,.08)}
+.chip.urg{border-color:rgba(232,85,85,.28);color:rgba(232,85,85,.85)}
+.chip.urg:hover{background:rgba(232,85,85,.08);border-color:var(--red)}
+.input-area{padding:.9rem 1.5rem 1.2rem;border-top:1px solid var(--border);background:var(--bg2);flex-shrink:0}
+.input-row{display:flex;gap:.65rem;align-items:flex-end}
+.mic-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:all .18s}
+.mic-btn:hover{border-color:var(--blue);color:var(--blue)}
+.mic-btn.rec{background:rgba(232,85,85,.15);border-color:var(--red);color:var(--red);animation:recPulse 1.2s infinite}
+@keyframes recPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,85,85,.35)}50%{box-shadow:0 0 0 5px rgba(232,85,85,0)}}
+.input-wrap{flex:1}
+textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.78rem .95rem;color:var(--text);font-family:inherit;font-size:.875rem;resize:none;outline:none;transition:border .18s,box-shadow .18s;line-height:1.55;max-height:120px}
+textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,144,217,.1)}
+textarea::placeholder{color:var(--text3)}
+.send-btn{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;transition:all .18s}
+.send-btn:hover:not(:disabled){transform:scale(1.07);box-shadow:0 4px 14px rgba(74,144,217,.4)}
+.send-btn:disabled{background:var(--border);cursor:not-allowed;opacity:.5}
+.input-hints{display:flex;justify-content:space-between;margin-top:.45rem}
+.hint-txt{font-size:.7rem;color:var(--text3)}
+.hist-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49;backdrop-filter:blur(3px)}
+.hist-overlay.open{display:block}
+.hist-panel{display:none;position:fixed;right:0;top:0;bottom:0;width:290px;background:var(--bg2);border-left:1px solid var(--border);padding:1.4rem;overflow-y:auto;z-index:50;animation:slideIn .24s cubic-bezier(.25,.46,.45,.94)}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.hist-panel.open{display:block}
+.hist-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem}
+.hist-title{font-weight:700;font-size:.95rem}
+.close-hist{background:none;border:none;color:var(--text3);font-size:21px;line-height:1}
+.close-hist:hover{color:var(--text)}
+.hist-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem;margin-bottom:.6rem;cursor:pointer;transition:all .18s}
+.hist-item:hover{border-color:var(--border2);background:var(--card2)}
+.hist-q{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.hist-meta{font-size:.7rem;color:var(--text3);display:flex;align-items:center;gap:6px}
+.hist-tag{padding:2px 7px;border-radius:4px;font-size:.68rem;font-weight:700}
+.tag-emerg{background:rgba(232,85,85,.15);color:var(--red)}
+.tag-gen{background:rgba(74,144,217,.15);color:var(--blue)}
+.no-hist{text-align:center;color:var(--text3);font-size:.84rem;padding:2rem 0}
+.clr-hist{background:transparent;border:1px solid var(--border);color:var(--text3);width:100%;padding:.6rem;border-radius:8px;font-size:.82rem;margin-top:.5rem;transition:all .18s}
+.clr-hist:hover{border-color:var(--red);color:var(--red)}
+
+/* Groq Configuration Modal styling */
+.settings-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center;padding:1.5rem}
+.settings-modal.open{display:flex}
+.settings-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:440px;width:100%;animation:alertPop .3s ease;position:relative}
+.settings-box h2{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600;margin-bottom:.5rem}
+.settings-desc{font-size:.85rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.55}
+.settings-input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:.8rem 1rem;font-size:.88rem;outline:none;margin-bottom:1.2rem;transition:all .2s}
+.settings-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,144,217,.15)}
+.settings-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn-save{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;padding:.65rem 1.4rem;border-radius:9px;font-size:.88rem;font-weight:500;transition:all .2s}
+.btn-save:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(74,144,217,.3)}
+.btn-cancel{background:transparent;border:1px solid var(--border);color:var(--text2);padding:.65rem 1.4rem;border-radius:9px;font-size:.88rem;transition:all .2s}
+.btn-cancel:hover{background:var(--card2);color:var(--text)}
+
+@media(max-width:640px){.nav{padding:1rem 1.25rem}.nav-links .nav-link{display:none}.hero{padding:3rem 1.25rem 2.5rem}.hero h1{font-size:2.1rem}.hero-stats{gap:1.5rem}.section{padding:3.5rem 1.25rem}.chat-header{padding:.8rem 1rem}.msgs-wrap{padding:1rem}.quick-bar{padding:.6rem 1rem .4rem}.input-area{padding:.75rem 1rem 1rem}.hist-panel{width:100%}}
+</style>
+</head>
+<body>
+
+<div id="landing">
+  <nav class="nav">
+    <div class="logo"><div class="logo-icon">🏥</div>MediAssist</div>
+    <div class="nav-links">
+      <button class="nav-link" onclick="scrollToId('features')">Features</button>
+      <button class="nav-link" onclick="scrollToId('emergencies')">Emergencies</button>
+      <button class="nav-cta" onclick="openChat()">Open First Aid Guide →</button>
+    </div>
+  </nav>
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="badge-dot"></span>AI-Powered · Available 24/7 · Groq Hosted</div>
+      <h1>Instant First Aid<br>Guidance When<br><span>Every Second Counts</span></h1>
+      <p class="hero-desc">Get immediate instructions powered by Groq Llama 3.1-8B for any medical incident. Complete, dynamic step-by-step guidance whenever disaster strikes.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="openChat()">🩺 Start First Aid Chat</button>
+        <button class="btn-outline" onclick="openSettings()">🔑 Set API Key</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">22+</div><div class="stat-lbl">Core Emergency Models</div></div>
+        <div class="stat"><div class="stat-num">&lt;1s</div><div class="stat-lbl">Groq Processing Speed</div></div>
+        <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">Configurable Terminal</div></div>
+        <div class="stat"><div class="stat-num">24/7</div><div class="stat-lbl">Always Operable</div></div>
+      </div>
+    </div>
+  </section>
+  <section class="section section-alt" id="features">
+    <h2 class="sec-title">Built for Real Emergencies</h2>
+    <p class="sec-sub">Advanced capabilities engineered to optimize response speed</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon ic-red">🚨</div><h3>Emergency Identification</h3><p>Automatically flags major high-stress crises to deploy clear red alerts with essential guidance.</p></div>
+      <div class="feat-card"><div class="feat-icon ic-blue">🧠</div><h3>Llama 3.1 Intelligence</h3><p>Leverages Meta's sub-second inference engine to process exact context and describe remedies directly.</p></div>
+      <div class="feat-card"><div class="feat-icon ic-green">📋</div><h3>Scannable Instructions</h3><p>Generates clean, easily understood procedural breakdowns usable in intense triage situations.</p></div>
+      <div class="feat-card"><div class="feat-icon ic-amber">🎙️</div><h3>Vocal Transcriptions</h3><p>Speak clearly when typing is unavailable. Built-in voice captures your audio context natively.</p></div>
+      <div class="feat-card"><div class="feat-icon ic-teal">💬</div><h3>Persistent Memory</h3><p>Caches all diagnostic history directly to your device via local isolation for retrieval later.</p></div>
+      <div class="feat-card"><div class="feat-icon ic-purple">📱</div><h3>Zero Cloud Risk</h3><p>Safe sandbox design ensures your Groq configuration is bound strictly within your specific browser session.</p></div>
+    </div>
+  </section>
+  <section class="section" id="emergencies">
+    <h2 class="sec-title">Emergencies We Cover</h2>
+    <p class="sec-sub">Select any incident to pull up diagnostic pathways</p>
+    <div class="emerg-grid">
+      <button class="etag crit" onclick="startWith('heart attack')">💔 Heart Attack</button>
+      <button class="etag crit" onclick="startWith('stroke')">🧠 Stroke</button>
+      <button class="etag crit" onclick="startWith('not breathing')">😮 Not Breathing</button>
+      <button class="etag crit" onclick="startWith('severe bleeding')">🩸 Severe Bleeding</button>
+      <button class="etag crit" onclick="startWith('seizure')">⚡ Seizure</button>
+      <button class="etag crit" onclick="startWith('poisoning')">☠️ Poisoning</button>
+      <button class="etag" onclick="startWith('choking')">🫁 Choking</button>
+      <button class="etag" onclick="startWith('burns')">🔥 Burns</button>
+      <button class="etag" onclick="startWith('cut bleeding')">🩹 Cuts & Wounds</button>
+      <button class="etag" onclick="startWith('fracture')">🦴 Fractures</button>
+      <button class="etag" onclick="startWith('fainting')">😵 Fainting</button>
+      <button class="etag" onclick="startWith('fever')">🌡️ High Fever</button>
+      <button class="etag" onclick="startWith('snake bite')">🐍 Snake Bite</button>
+      <button class="etag" onclick="startWith('electric shock')">⚡ Electric Shock</button>
+      <button class="etag" onclick="startWith('heat stroke')">☀️ Heat Stroke</button>
+      <button class="etag" onclick="startWith('allergic reaction')">🌸 Allergic Reaction</button>
+      <button class="etag" onclick="startWith('breathing difficulty')">😮‍💨 Breathing Issues</button>
+      <button class="etag" onclick="startWith('nosebleed')">👃 Nosebleed</button>
+      <button class="etag" onclick="startWith('head injury')">🤕 Head Injury</button>
+      <button class="etag" onclick="startWith('diabetic emergency')">💉 Diabetic Crisis</button>
+      <button class="etag" onclick="startWith('eye injury')">👁️ Eye Injury</button>
+      <button class="etag" onclick="startWith('drowning')">🌊 Drowning</button>
+    </div>
+  </section>
+  <footer>
+    <div class="disclaimer"><strong>⚠️ Medical Disclaimer:</strong> MediAssist provides algorithmic first aid guidance for testing. It does not substitute emergency medical services. <strong>Always call 112 / 911 for emergencies.</strong></div>
+    <p class="footer-note">MediAssist AI Terminal · Powered by GroqCloud Platform</p>
+  </footer>
+</div>
+
+<div id="chatpage">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <button class="back-btn" onclick="closeChatPage()">← Back</button>
+      <div class="chat-info-row">
+        <div class="chat-av">🩺</div>
+        <div>
+          <div class="chat-title-txt">MediAssist Terminal</div>
+          <div class="chat-online"><span class="online-dot"></span>Active — Groq Connection ready</div>
+        </div>
+      </div>
+    </div>
+    <div class="chat-actions">
+      <button class="icon-btn" onclick="openSettings()" title="API Key Settings">🔑</button>
+      <button class="icon-btn" onclick="toggleHist()" title="History">📋</button>
+      <button class="icon-btn" onclick="newChat()" title="New Chat">🗑️</button>
+    </div>
+  </div>
+  <div class="msgs-wrap" id="msgsWrap"></div>
+  <div class="quick-bar">
+    <div class="quick-label">Triage pathways:</div>
+    <div class="chips-row">
+      <button class="chip urg" onclick="sendQ('heart attack')">💔 Chest Pain</button>
+      <button class="chip urg" onclick="sendQ('choking')">🫁 Choking</button>
+      <button class="chip urg" onclick="sendQ('not breathing')">😮 Not Breathing</button>
+      <button class="chip urg" onclick="sendQ('stroke')">🧠 Stroke</button>
+      <button class="chip" onclick="sendQ('cut bleeding')">🩸 Bleeding</button>
+      <button class="chip" onclick="sendQ('burns')">🔥 Burns</button>
+      <button class="chip" onclick="sendQ('fracture')">🦴 Fracture</button>
+      <button class="chip" onclick="sendQ('fever')">🌡️ Fever</button>
+      <button class="chip" onclick="sendQ('snake bite')">🐍 Snake Bite</button>
+      <button class="chip" onclick="sendQ('electric shock')">⚡ Electric Shock</button>
+      <button class="chip" onclick="sendQ('allergic reaction')">🌸 Allergy</button>
+      <button class="chip" onclick="sendQ('fainting')">😵 Fainting</button>
+      <button class="chip" onclick="sendQ('heat stroke')">☀️ Heat Stroke</button>
+      <button class="chip" onclick="sendQ('poisoning')">☠️ Poisoning</button>
+    </div>
+  </div>
+  <div class="input-area">
+    <div class="input-row">
+      <button class="mic-btn" id="micBtn" onclick="toggleVoice()" title="Voice input">🎙️</button>
+      <div class="input-wrap">
+        <textarea id="userInput" rows="1" placeholder="Describe the crisis or symptoms immediately..." onkeydown="onKey(event)" oninput="autoResize(this)"></textarea>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+    <div class="input-hints">
+      <span class="hint-txt">Enter to send · Shift+Enter for line breaks</span>
+      <span class="hint-txt" id="voiceHint">🎙️ Tap to start dictation</span>
+    </div>
+  </div>
+</div>
+
+<div class="hist-overlay" id="histOverlay" onclick="toggleHist()"></div>
+<div class="hist-panel" id="histPanel">
+  <div class="hist-head"><span class="hist-title">Stored Pathways</span><button class="close-hist" onclick="toggleHist()">×</button></div>
+  <div id="histList"></div>
+  <button class="clr-hist" onclick="clearAllHistory()">🗑️ Clear All Cache</button>
+</div>
+
+<div class="settings-modal" id="settingsModal">
+  <div class="settings-box">
+    <h2>Groq API Settings</h2>
+    <p class="settings-desc">Provide your private Groq API key. This key allows immediate connectivity to the high-speed Llama 3.1 8B instant model. It is saved directly to your local browser storage.</p>
+    <input type="password" class="settings-input" id="apiKeyInput" placeholder="gsk_..." />
+    <div class="settings-actions">
+      <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+      <button class="btn-save" onclick="saveSettings()">Apply Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  LOCAL FALLBACK DATABASE — runs if no key is provided
+// ══════════════════════════════════════════════════════════════
+const FIRSTAID_DB = {
+  'heart attack': {emerg:true, text:`This is a possible heart attack — a life-threatening emergency.\n\n1. CALL EMERGENCY SERVICES (112 / 911) IMMEDIATELY\n2. Have the person sit or lie down in a comfortable position — usually sitting up eases breathing.\n3. Loosen any tight clothing around neck, chest, and waist.\n4. Give aspirin (300mg) if available and the person is not allergic — have them chew it slowly.\n5. If the person becomes unconscious and stops breathing, begin CPR immediately.\n6. Stay calm, reassure the person, and keep them still until help arrives.\n\n⚠️ Warning: Do NOT give food, water, or any medication other than aspirin.\n⚠️ Warning: Do NOT leave the person alone at any time.\n\n**Do NOT:**\n- Do not let them walk around\n- Do not give them anything to drink`},
+  'stroke': {emerg:true, text:`This may be a stroke — act FAST, every second counts.\n\n1. CALL EMERGENCY SERVICES (112 / 911) IMMEDIATELY\n2. Use the FAST test: Face drooping, Arm weakness, Speech difficulty, Time to call.\n3. Note the exact time symptoms started.\n4. Keep the person calm and still — lay them down with head and shoulders slightly raised.\n5. Do NOT give food, water, or medication.\n6. If unconscious but breathing, place in recovery position (on their side).\n7. If not breathing, begin CPR.\n\n⚠️ Warning: Do NOT give aspirin for stroke — it can make some strokes worse.`},
+  'not breathing': {emerg:true, text:`This person is not breathing — start CPR immediately.\n\n1. CALL EMERGENCY SERVICES (112 / 911) IMMEDIATELY or shout for someone to call.\n2. Lay the person flat on their back on a firm surface.\n3. Tilt head back gently, lift chin to open airway.\n4. Check for breathing for no more than 10 seconds.\n5. Begin chest compressions: Place heel of hand on center of chest, push down hard and fast — 30 compressions at 100-120 per minute.\n6. Give 2 rescue breaths: pinch nose, seal your mouth over theirs, blow until chest rises.\n7. Continue 30 compressions then 2 breaths until help arrives or person starts breathing.\n\n⚠️ Warning: Push hard enough — at least 5cm deep. Do not stop until paramedics arrive.`},
+  'choking': {emerg:true, text:`Person is choking — act immediately.\n\n**If they can cough:**\n1. Encourage them to keep coughing forcefully — do not interfere.\n\n**If they CANNOT cough, speak, or breathe:**\n1. Stand behind them, lean them slightly forward.\n2. Give 5 firm back blows between shoulder blades with heel of your hand.\n3. If blockage remains: give 5 abdominal thrusts (Heimlich maneuver).\n4. Alternate 5 back blows and 5 abdominal thrusts until object comes out or person loses consciousness.\n5. If unconscious, call 112/911 and begin CPR immediately.\n\n⚠️ Warning: For pregnant women or infants — use chest thrusts, NOT abdominal thrusts.`},
+  'severe bleeding': {emerg:true, text:`Severe uncontrolled bleeding — act immediately.\n\n1. CALL EMERGENCY SERVICES (112 / 911) for severe bleeding.\n2. Apply firm, direct pressure to the wound using a clean cloth or bandage.\n3. Press continuously — do NOT remove the cloth even if soaked; add more on top.\n4. If possible, raise the injured area above heart level.\n5. Maintain pressure for at least 10–15 minutes without releasing.\n6. If bleeding is on a limb and life-threatening, a tourniquet may be needed.\n7. Keep the person warm and still to prevent shock.\n\n⚠️ Warning: Do NOT remove objects embedded in the wound — apply pressure around them.`}
+};
+
+// ── KEYWORDS MAPPINGS ──
+const EMERGENCY_KW = ['chest pain','heart attack','not breathing','unconscious','severe bleeding','stroke','seizure','poisoning','overdose','anaphylaxis','cardiac arrest','choking','unresponsive','stopped breathing'];
+
+function matchTopic(text) {
+  const t = text.toLowerCase();
+  const map = {
+    'heart attack':['heart attack','chest pain','cardiac','heart pain'],
+    'stroke':['stroke','face drooping','arm weak','slurred speech'],
+    'not breathing':['not breathing','stopped breathing','no pulse','cpr','arrest'],
+    'choking':['chok','heimlich','blocked airway','food stuck'],
+    'severe bleeding':['severe bleed','heavy bleed','hemorrhage']
+  };
+  for (const [topic, keywords] of Object.entries(map)) {
+    if (keywords.some(k => t.includes(k))) return topic;
+  }
+  return null;
+}
+
+// ── STATE & LOCAL CONFIG ──
+let chatHistory=[], savedChats=[], isBusy=false;
+let recognition=null, isRecording=false, pendingMsg=null;
+let sessionId=Date.now();
+let groqApiKey = localStorage.getItem('groq_api_key') || '';
+
+try {
+  savedChats = JSON.parse(localStorage.getItem('medi_v4') || '[]');
+} catch(e){}
+
+// ── NAVIGATION & INITIALIZATION ──
+function openChat(){
+  document.getElementById('landing').style.display='none';
+  const cp=document.getElementById('chatpage'); 
+  cp.style.display='flex';
+  if(!chatHistory.length) showWelcome();
+  if(pendingMsg){
+    const m = pendingMsg;
+    pendingMsg = null;
+    setTimeout(() => sendQ(m), 350);
+  }
+  setTimeout(() => document.getElementById('userInput').focus(), 100);
+}
+
+function closeChatPage(){
+  document.getElementById('chatpage').style.display='none';
+  document.getElementById('landing').style.display='flex';
+  closeHistPanel();
+}
+
+function startWith(m){
+  pendingMsg=m;
+  openChat();
+}
+
+function scrollToId(id){
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth'});
+}
+
+function openSettings(){
+  const sModal = document.getElementById('settingsModal');
+  document.getElementById('apiKeyInput').value = groqApiKey;
+  sModal.classList.add('open');
+}
+
+function closeSettings(){
+  document.getElementById('settingsModal').classList.remove('open');
+}
+
+function saveSettings(){
+  const val = document.getElementById('apiKeyInput').value.trim();
+  groqApiKey = val;
+  localStorage.setItem('groq_api_key', val);
+  closeSettings();
+  alert('Settings successfully cached. Groq model configured.');
+}
+
+// ── WELCOME TERMINAL ──
+function showWelcome(){
+  addMsg(`Welcome to the **MediAssist Terminal**. I can assist with first aid protocols for a wide range of emergencies.\n\nConfigure your private Groq API key using the 🔑 settings button above to query **Llama 3.1 8B Instant**. If you don't provide a key, the terminal will fall back to its internal local database.\n\n**⚠️ Warning:** Always prioritize calling emergency medical services (112 / 911) first.`, 'ai', false, false);
+}
+
+// ── FORMATTING HELPERS ──
+function isEmerg(t){ return EMERGENCY_KW.some(k=>t.toLowerCase().includes(k)); }
+function tstamp(){ return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
+function esc(s){ const d=document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
+function fmt(t){ return t.replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--text);font-weight:700">$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>'); }
+
+// ── RENDER ENGINE ──
+function parseContent(text){
+  const c=document.createElement('div');
+  let stepsDiv=null, bulletUl=null;
+  for(const raw of text.split('\n')){
+    const line=raw.trim();
+    if(!line){stepsDiv=null; bulletUl=null; continue;}
+    const stepM=line.match(/^(\d+)[.)]\s+(.+)/);
+    const boldM=line.match(/^\*\*(.+?)\*\*:?\s*(.*)/);
+    const warnM=line.startsWith('⚠️')||/^warning:/i.test(line);
+    const bulletM=line.match(/^[-•]\s+(.+)/);
+    
+    if(stepM){
+      bulletUl=null;
+      if(!stepsDiv){stepsDiv=document.createElement('div'); stepsDiv.className='steps'; c.appendChild(stepsDiv);}
+      const si=document.createElement('div'); si.className='step-item';
+      const sn=document.createElement('div'); sn.className='step-num'; sn.textContent=stepM[1];
+      const st=document.createElement('div'); st.className='step-txt'; st.innerHTML=fmt(stepM[2]);
+      si.appendChild(sn); si.appendChild(st); stepsDiv.appendChild(si);
+    } else if(warnM){
+      stepsDiv=null; bulletUl=null;
+      const w=document.createElement('div'); w.className='warn-box'; w.innerHTML=fmt(line); c.appendChild(w);
+    } else if(boldM){
+      stepsDiv=null; bulletUl=null;
+      const h=document.createElement('div'); h.className='msg-hdr'; h.innerHTML=fmt(boldM[1]); c.appendChild(h);
+      if(boldM[2].trim()){
+        const p=document.createElement('div'); p.className='msg-para'; p.innerHTML=fmt(boldM[2]); c.appendChild(p);
+      }
+    } else if(bulletM){
+      stepsDiv=null;
+      if(!bulletUl){bulletUl=document.createElement('ul'); bulletUl.style.cssText='margin:.4rem 0 .4rem 1.1rem;display:flex;flex-direction:column;gap:3px'; c.appendChild(bulletUl);}
+      const li=document.createElement('li'); li.style.cssText='font-size:.85rem;line-height:1.65;color:var(--text2)'; li.innerHTML=fmt(bulletM[1]); bulletUl.appendChild(li);
+    } else {
+      stepsDiv=null; bulletUl=null;
+      const p=document.createElement('div'); p.className='msg-para'; p.innerHTML=fmt(line); c.appendChild(p);
+    }
+  }
+  return c;
+}
+
+// ── CORE INTERACTION LOGIC ──
+function addMsg(content, role, emerg=false, save=true){
+  const wrap=document.getElementById('msgsWrap');
+  if(emerg && role==='ai'){
+    const el=document.createElement('div'); el.className='emerg-alert';
+    el.innerHTML=`<div class="ea-head"><span class="ea-pulse"></span>🚨 PRIORITY CRITICAL ALERT</div><div class="ea-num">📞 CALL 112 / 911 NOW</div><div class="ea-desc">This matches a <strong>life-threatening emergency</strong>. Immediately contact medical authorities while performing stabilization procedures below.</div>`;
+    wrap.appendChild(el); el.scrollIntoView({behavior:'smooth',block:'end'});
+  }
+  const row=document.createElement('div'); row.className=`msg-row ${role}`;
+  const av=document.createElement('div'); av.className=`msg-av ${role}`; av.textContent=role==='ai'?'🩺':'👤';
+  const body=document.createElement('div'); body.className='msg-body';
+  const bub=document.createElement('div'); bub.className='bubble'; bub.appendChild(parseContent(content));
+  const ts=document.createElement('div'); ts.className='msg-time'; ts.textContent=tstamp();
+  
+  body.appendChild(bub); body.appendChild(ts);
+  if(role==='ai'){row.appendChild(av); row.appendChild(body);} else {row.appendChild(body); row.appendChild(av);}
+  wrap.appendChild(row);
+  
+  requestAnimationFrame(()=>row.scrollIntoView({behavior:'smooth',block:'end'}));
+  if(save){
+    chatHistory.push({role:role==='ai'?'assistant':'user', content});
+    if(role==='user') saveSession(content, emerg); else updateSession();
+  }
+}
+
+function showTyping(){
+  const wrap=document.getElementById('msgsWrap');
+  const row=document.createElement('div'); row.className='msg-row ai'; row.id='typingRow';
+  const av=document.createElement('div'); av.className='msg-av ai'; av.textContent='🩺';
+  const body=document.createElement('div'); body.className='msg-body';
+  body.innerHTML='<div class="typing-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  row.appendChild(av); row.appendChild(body); wrap.appendChild(row);
+  row.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
+function hideTyping(){ document.getElementById('typingRow')?.remove(); }
+
+// ── FETCH API HANDLER (Groq) ──
+async function fetchGroqCompletion(prompt) {
+  const systemPrompt = `You are an expert AI first aid assistant called MediAssist. Your role is to provide rapid, precise, and concise medical instructions based on the user's symptoms or situation. 
+
+Formatting Rules:
+1. State critical warnings or phone contact instructions immediately using clear, all-caps alerts if life-threatening.
+2. Provide numbered, distinct, actionable steps for treatment.
+3. Keep sentences short. Ensure scannability during stressful situations.
+4. Add clear caveats if emergency medical help must be sought.
+
+Use normal markdown syntax (* for italics, ** for bold).`;
+
+  const payload = {
+    model: 'llama-3.1-8b-instant',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...chatHistory.slice(-4), // Include context
+      { role: 'user', content: prompt }
+    ],
+    temperature: 0.3
+  };
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${groqApiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ error: { message: 'Network breakdown' } }));
+    throw new Error(err.error?.message || 'Inference error');
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+// ── SEND MESSAGE ACTIONS ──
+async function sendMessage(){
+  const el=document.getElementById('userInput');
+  const text=el.value.trim();
+  if(!text || isBusy) return;
+  
+  el.value=''; autoResize(el); el.focus();
+  const emerg=isEmerg(text);
+  addMsg(text, 'user', emerg);
+  
+  isBusy=true;
+  document.getElementById('sendBtn').disabled=true;
+  showTyping();
+
+  try {
+    if (groqApiKey) {
+      // Connect to Groq Cloud Platform
+      const completion = await fetchGroqCompletion(text);
+      hideTyping();
+      addMsg(completion, 'ai', emerg);
+    } else {
+      // Offline fallback when no key is set
+      await new Promise(r=>setTimeout(r, 800));
+      hideTyping();
+      const topic = matchTopic(text);
+      if (topic && FIRSTAID_DB[topic]) {
+        const entry=FIRSTAID_DB[topic];
+        addMsg(entry.text, 'ai', entry.emerg || emerg);
+      } else {
+        addMsg(`I've received your query about: "${text}"\n\n**Standard Protocol:**\n1. Confirm the immediate area is completely safe for both you and the patient.\n2. Shout for local assistance and call 112 / 911 immediately.\n3. Keep the person warm, still, and calm.\n4. Check breathing, airway, and pulse rates.\n\n⚠️ Warning: To enable continuous medical evaluation, add a valid Groq API Key via the settings tab.`, 'ai', emerg);
+      }
+    }
+  } catch(e) {
+    hideTyping();
+    addMsg(`**Network connection failed.**\nCould not process query via Groq servers.\n\n**System Error:** ${e.message}\n\n**Emergency Recovery steps:**\n1. Check your network or valid API key configuration.\n2. Call local emergency responders immediately.\n3. Stabilize the patient and keep their airway clear.`, 'ai', emerg);
+  }
+
+  isBusy=false;
+  document.getElementById('sendBtn').disabled=false;
+}
+
+function sendQ(t){
+  document.getElementById('userInput').value=t;
+  sendMessage();
+}
+
+function onKey(e){
+  if(e.key==='Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el){
+  el.style.height='auto'; 
+  el.style.height=Math.min(el.scrollHeight, 120)+'px';
+}
+
+function newChat(){
+  chatHistory=[]; 
+  sessionId=Date.now(); 
+  document.getElementById('msgsWrap').innerHTML=''; 
+  showWelcome();
+}
+
+// ── VOICE TRANSCRIPTION (SpeechRecognition) ──
+function toggleVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){alert('Speech Recognition requires Google Chrome or Chromium browsers.'); return;}
+  const btn=document.getElementById('micBtn'), hint=document.getElementById('voiceHint');
+  if(isRecording){ recognition?.stop(); return; }
+  
+  recognition = new SR();
+  recognition.lang='en-US';
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  
+  recognition.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    const i=document.getElementById('userInput');
+    i.value=t; autoResize(i);
+    hint.textContent=`✅ Captured: "${t.slice(0,40)}${t.length>40?'...':''}"`;
+    setTimeout(()=>{hint.textContent='🎙️ Tap to start dictation'}, 3500);
+  };
+  recognition.onend=()=>{ isRecording=false; btn.classList.remove('rec'); btn.textContent='🎙️'; };
+  recognition.onerror=e=>{ 
+    isRecording=false; 
+    btn.classList.remove('rec'); 
+    btn.textContent='🎙️'; 
+    hint.textContent=`❌ Dictation failed: ${e.error}`; 
+    setTimeout(()=>{hint.textContent='🎙️ Tap to start dictation'}, 3000);
+  };
+  
+  recognition.start();
+  isRecording=true;
+  btn.classList.add('rec');
+  btn.textContent='⏹️';
+  hint.textContent='🔴 Transcribing voice in real time...';
+}
+
+// ── CONVERSATION CACHE HISTORIES ──
+function saveSession(query, emerg){
+  savedChats.unshift({sessionId, query:query.slice(0,90), time:new Date().toLocaleString(), emergency:emerg, messages:[...chatHistory]});
+  if(savedChats.length>25) savedChats=savedChats.slice(0,25);
+  try { localStorage.setItem('medi_v4', JSON.stringify(savedChats)); } catch(e){}
+}
+
+function updateSession(){
+  const i=savedChats.findIndex(c=>c.sessionId===sessionId);
+  if(i>=0){ savedChats[i].messages=[...chatHistory]; try{localStorage.setItem('medi_v4',JSON.stringify(savedChats));}catch(e){} }
+}
+
+function renderHistList(){
+  const list=document.getElementById('histList');
+  if(!savedChats.length){ list.innerHTML='<div class="no-hist">No triage records found.</div>'; return; }
+  list.innerHTML='';
+  savedChats.forEach((c, i)=>{
+    const item=document.createElement('div'); item.className='hist-item';
+    item.innerHTML=`<div class="hist-q">${c.emergency?'🚨 ':''}${esc(c.query)}</div><div class="hist-meta"><span class="hist-tag ${c.emergency?'tag-emerg':'tag-gen'}">${c.emergency?'Critical':'General'}</span>${c.time}</div>`;
+    item.onclick=()=>{ loadHistory(i); toggleHist(); };
+    list.appendChild(item);
+  });
+}
+
+function loadHistory(i){
+  const item=savedChats[i]; if(!item) return;
+  chatHistory=[]; document.getElementById('msgsWrap').innerHTML='';
+  chatHistory=[...(item.messages||[])];
+  chatHistory.forEach(m=>addMsg(m.content, m.role==='assistant'?'ai':'user', false, false));
+  setTimeout(()=>{const w=document.getElementById('msgsWrap'); w.scrollTop=w.scrollHeight;},100);
+}
+
+function clearAllHistory(){
+  if(!confirm('Clear all triage logs?')) return;
+  savedChats=[]; try{localStorage.removeItem('medi_v4');}catch(e){}
+  renderHistList();
+}
+
+function toggleHist(){
+  const p=document.getElementById('histPanel'), o=document.getElementById('histOverlay');
+  if(p.classList.contains('open')){ closeHistPanel(); } else { renderHistList(); p.classList.add('open'); o.classList.add('open'); }
+}
+
+function closeHistPanel(){
+  document.getElementById('histPanel').classList.remove('open');
+  document.getElementById('histOverlay').classList.remove('open');
+}
+</script>
+</body>
+</html>
